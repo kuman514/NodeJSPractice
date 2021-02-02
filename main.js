@@ -14,11 +14,8 @@ let app = http.createServer((request, response) => {
     return response.writeHead(404)
   }
 
-  console.log(queryData.id)
-
   response.writeHead(200)
-  fs.readFile(`data/${queryData.id}`, 'utf8', (err, description) => {
-    console.log(description)
+  fs.readFile(`data/${title}`, 'utf8', (err, description) => {
     let template = `
     <!DOCTYPE html>
     <head>
