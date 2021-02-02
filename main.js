@@ -9,7 +9,11 @@ let app = http.createServer((request, response) => {
   let title = queryData.id
 
   if (pathName === '/') {
-    fs.readFile(`data/${title}`, 'utf8', (err, description) => {
+    if (queryData.id === undefined) {
+      title = 'Welcome'
+      queryData.id = 'Welcome'
+    }
+    fs.readFile(`data/${queryData.id}`, 'utf8', (err, description) => {
       let template = `
       <!DOCTYPE html>
       <head>
