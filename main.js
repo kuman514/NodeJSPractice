@@ -2,6 +2,8 @@ let http = require('http')
 let fs = require('fs')
 let url = require('url')
 
+let list = '<ul></ul>'
+
 let app = http.createServer((request, response) => {
   let _url = request.url
   let queryData = url.parse(_url, true).query
@@ -10,6 +12,14 @@ let app = http.createServer((request, response) => {
 
   if (pathName === '/') {
     if (queryData.id === undefined) {
+      fs.readdir('./data', (err, filelist) => {
+        console.log(filelist)
+        list = '<ul>'
+        filelist.forEach((item) => {
+          list += `<li><a href="/?id=${item}">${item}</a></li>`
+        });
+        list += '</ul>'
+      })
       title = 'Welcome'
       queryData.id = 'Welcome'
     }
@@ -22,11 +32,7 @@ let app = http.createServer((request, response) => {
       </head>
       <body>
           <h1><a href="/">WEB</a></h1>
-          <ol>
-              <li><a href="/?id=HTML">HTML</a></li>
-              <li><a href="/?id=CSS">CSS</a></li>
-              <li><a href="/?id=JavaScript">JavaScript</a></li>
-          </ol>
+          ${list}
           <h2>${title}</h2>
           <p>${description}</p>
       </body>
