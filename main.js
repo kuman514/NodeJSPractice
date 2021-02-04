@@ -56,7 +56,7 @@ let app = http.createServer((request, response) => {
     title = 'Create'
     queryData.id = 'Create'
     let template = templateHTML(list, title, `
-      <form action="http://localhost:3000/process_create" method="post">
+      <form action="http://localhost:3000/create_process" method="post">
         <p>
           <input type="text" name="title" placeholder="Title">
         </p>
@@ -70,6 +70,9 @@ let app = http.createServer((request, response) => {
     `)
     response.writeHead(200)
     response.end(template)
+  } else if (pathName === '/create_process') {
+    response.writeHead(200)
+    response.end('koishi')
   } else {
     response.writeHead(404)
     response.end('File not found')
