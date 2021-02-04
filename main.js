@@ -80,9 +80,6 @@ let app = http.createServer((request, response) => {
       let post = qs.parse(body)
       let title = post.title
       let desc = post.description
-      console.log(post)
-      console.log(post.title)
-      console.log(post.description)
       fs.writeFile(`data/${title}`, desc, 'utf8', (err) => {
         response.writeHead(302, {
           Location: `/?id=${title}`
