@@ -83,9 +83,11 @@ let app = http.createServer((request, response) => {
       console.log(post)
       console.log(post.title)
       console.log(post.description)
+      fs.writeFile(`data/${title}`, desc, 'utf8', (err) => {
+        response.writeHead(200)
+        response.end('success')
+      })
     })
-    response.writeHead(200)
-    response.end('koishi')
   } else {
     response.writeHead(404)
     response.end('File not found')
