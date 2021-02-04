@@ -12,6 +12,7 @@ function templateHTML (list, title, body) {
     <body>
       <h1><a href="/">WEB</a></h1>
       ${list}
+      <a href="/create">Create</a>
       ${body}
     </body>
   `
@@ -30,6 +31,7 @@ let app = http.createServer((request, response) => {
   let _url = request.url
   let queryData = url.parse(_url, true).query
   let pathName = url.parse(_url, true).pathname
+  console.log(pathName)
   let title = queryData.id
 
   if (pathName === '/') {
@@ -46,6 +48,28 @@ let app = http.createServer((request, response) => {
       response.writeHead(200)
       response.end(template)
     })
+  } else if (pathName === '/create') {
+    let list = '<ul></ul>'
+    fs.readdir('./data', (err, filelist) => {
+      list = templateList(filelist)
+    })
+    title = 'Create'
+    queryData.id = 'Create'
+    let template = templateHTML(list, title, `
+      <form action="http://localhost:3000/process_create" method="post">
+        <p>
+          <input type="text" name="title" placeholder="Title">
+        </p>
+        <p>
+          <textarea name="description" rows="8" cols="200" placeholder="Description"></textarea>
+        </p>
+        <p>
+          <input type="submit">
+        </p>
+      </form>
+    `)
+    response.writeHead(200)
+    response.end(template)
   } else {
     response.writeHead(404)
     response.end('File not found')
