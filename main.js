@@ -1,6 +1,7 @@
 let http = require('http')
 let fs = require('fs')
 let url = require('url')
+let qs = require('querystring')
 
 function templateHTML (list, title, body) {
   return `
@@ -71,6 +72,18 @@ let app = http.createServer((request, response) => {
     response.writeHead(200)
     response.end(template)
   } else if (pathName === '/create_process') {
+    let body = ''
+    request.on('data', (data) => {
+      body += data
+    })
+    request.on('end', () => {
+      let post = qs.parse(body)
+      let title = post.title
+      let desc = post.description
+      console.log(post)
+      console.log(post.title)
+      console.log(post.description)
+    })
     response.writeHead(200)
     response.end('koishi')
   } else {
