@@ -84,8 +84,10 @@ let app = http.createServer((request, response) => {
       console.log(post.title)
       console.log(post.description)
       fs.writeFile(`data/${title}`, desc, 'utf8', (err) => {
-        response.writeHead(200)
-        response.end('success')
+        response.writeHead(302, {
+          Location: `/?id=${title}`
+        })
+        response.end()
       })
     })
   } else {
