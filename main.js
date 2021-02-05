@@ -121,7 +121,6 @@ let app = http.createServer((request, response) => {
       let title = post.title
       let desc = post.description
       let id = post.id
-      console.log(post)
       fs.rename(`data/${id}`, `data/${title}`, (err) => {
         fs.writeFile(`data/${title}`, desc, 'utf8', (err) => {
           response.writeHead(302, {
@@ -130,14 +129,6 @@ let app = http.createServer((request, response) => {
           response.end()
         })
       })
-      /*
-      fs.writeFile(`data/${title}`, desc, 'utf8', (err) => {
-        response.writeHead(302, {
-          Location: `/?id=${title}`
-        })
-        response.end()
-      })
-      */
     })
   } else {
     response.writeHead(404)
