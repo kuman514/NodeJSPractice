@@ -16,7 +16,7 @@ function templateHTML (list, title, body) {
       <a href="/create">Create</a>
       <a href="/update?id=${title}">Update</a>
       <form action="delete_process" method="post">
-        <input type="hidden" name="id" value=${title}></input>
+        <input type="hidden" name="id" value="${title}"></input>
         <input type="submit" value="delete"></input>
       </form>
       ${body}
@@ -132,6 +132,21 @@ let app = http.createServer((request, response) => {
           })
           response.end()
         })
+      })
+    })
+  } else if (pathName === '/delete_process') {
+    let body = ''
+    request.on('data', (data) => {
+      body += data
+    })
+    request.on('end', () => {
+      let post = qs.parse(body)
+      let id = post.id
+      console.log(post)
+      console.log(id)
+      fs.unlink(`data/${id}`, (err) => {
+        response.writeHead(302, {Location: `/`})
+        response.end()
       })
     })
   } else {
