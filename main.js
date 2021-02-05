@@ -15,6 +15,10 @@ function templateHTML (list, title, body) {
       ${list}
       <a href="/create">Create</a>
       <a href="/update?id=${title}">Update</a>
+      <form action="delete_process" method="post">
+        <input type="hidden" name="id" value=${title}></input>
+        <input type="submit" value="delete"></input>
+      </form>
       ${body}
     </body>
   `
