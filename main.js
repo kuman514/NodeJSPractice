@@ -111,6 +111,34 @@ let app = http.createServer((request, response) => {
       response.writeHead(200)
       response.end(template)
     })
+  } else if (pathName === '/update_process') {
+    let body = ''
+    request.on('data', (data) => {
+      body += data
+    })
+    request.on('end', () => {
+      let post = qs.parse(body)
+      let title = post.title
+      let desc = post.description
+      let id = post.id
+      console.log(post)
+      fs.rename(`data/${id}`, `data/${title}`, (err) => {
+        fs.writeFile(`data/${title}`, desc, 'utf8', (err) => {
+          response.writeHead(302, {
+            Location: `/?id=${title}`
+          })
+          response.end()
+        })
+      })
+      /*
+      fs.writeFile(`data/${title}`, desc, 'utf8', (err) => {
+        response.writeHead(302, {
+          Location: `/?id=${title}`
+        })
+        response.end()
+      })
+      */
+    })
   } else {
     response.writeHead(404)
     response.end('File not found')
