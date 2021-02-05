@@ -14,6 +14,7 @@ function templateHTML (list, title, body) {
       <h1><a href="/">WEB</a></h1>
       ${list}
       <a href="/create">Create</a>
+      <a href="/update?id=${title}">Update</a>
       ${body}
     </body>
   `
@@ -87,6 +88,9 @@ let app = http.createServer((request, response) => {
         response.end()
       })
     })
+  } else if (pathName === '/update') {
+    response.writeHead(200)
+    response.end('update page')
   } else {
     response.writeHead(404)
     response.end('File not found')
