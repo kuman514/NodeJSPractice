@@ -1,3 +1,4 @@
-<script>
+&lt;script&gt;
 alert('You did not apply XSS prevention.')
-</script>
+location.href = 'https://twitter.com/kumankoishi'
+&lt;/script&gt;

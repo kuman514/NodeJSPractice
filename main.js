@@ -10,7 +10,6 @@ let app = http.createServer((request, response) => {
   let _url = request.url
   let queryData = url.parse(_url, true).query
   let pathName = url.parse(_url, true).pathname
-  console.log(pathName)
   let title = queryData.id
 
   if (pathName === '/') {
