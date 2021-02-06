@@ -3,34 +3,35 @@ let fs = require('fs')
 let url = require('url')
 let qs = require('querystring')
 
-function templateHTML (list, title, body) {
-  return `
-    <!DOCTYPE html>
-    <head>
-      <title>WEB1 - ${title}</title>
-      <meta charset="utf-8">
-    </head>
-    <body>
-      <h1><a href="/">WEB</a></h1>
-      ${list}
-      <a href="/create">Create</a>
-      <a href="/update?id=${title}">Update</a>
-      <form action="delete_process" method="post">
-        <input type="hidden" name="id" value="${title}"></input>
-        <input type="submit" value="delete"></input>
-      </form>
-      ${body}
-    </body>
-  `
-}
-
-function templateList (filelist) {
-  let list = '<ul>'
-  filelist.forEach((item) => {
-    list += `<li><a href="/?id=${item}">${item}</a></li>`
-  })
-  list += '</ul>'
-  return list
+let template = {
+  html: (list, title, body) => {
+    return `
+      <!DOCTYPE html>
+      <head>
+        <title>WEB1 - ${title}</title>
+        <meta charset="utf-8">
+      </head>
+      <body>
+        <h1><a href="/">WEB</a></h1>
+        ${list}
+        <a href="/create">Create</a>
+        <a href="/update?id=${title}">Update</a>
+        <form action="delete_process" method="post">
+          <input type="hidden" name="id" value="${title}"></input>
+          <input type="submit" value="delete"></input>
+        </form>
+        ${body}
+      </body>
+    `
+  },
+  list: (filelist) => {
+    let list = '<ul>'
+    filelist.forEach((item) => {
+      list += `<li><a href="/?id=${item}">${item}</a></li>`
+    })
+    list += '</ul>'
+    return list
+  }
 }
 
 let app = http.createServer((request, response) => {
@@ -43,25 +44,25 @@ let app = http.createServer((request, response) => {
   if (pathName === '/') {
     let list = '<ul></ul>'
     fs.readdir('./data', (err, filelist) => {
-      list = templateList(filelist)
+      list = template.list(filelist)
     })
     if (queryData.id === undefined) {
       title = 'Welcome'
       queryData.id = 'Welcome'
     }
     fs.readFile(`data/${queryData.id}`, 'utf8', (err, description) => {
-      let template = templateHTML(list, title, `<h2>${title}</h2><p>${description}</p>`)
+      let _template = template.html(list, title, `<h2>${title}</h2><p>${description}</p>`)
       response.writeHead(200)
-      response.end(template)
+      response.end(_template)
     })
   } else if (pathName === '/create') {
     let list = '<ul></ul>'
     fs.readdir('./data', (err, filelist) => {
-      list = templateList(filelist)
+      list = template.list(filelist)
     })
     title = 'Create'
     queryData.id = 'Create'
-    let template = templateHTML(list, title, `
+    let _template = template.html(list, title, `
       <form action="/create_process" method="post">
         <p>
           <input type="text" name="title" placeholder="Title">
@@ -75,7 +76,7 @@ let app = http.createServer((request, response) => {
       </form>
     `)
     response.writeHead(200)
-    response.end(template)
+    response.end(_template)
   } else if (pathName === '/create_process') {
     let body = ''
     request.on('data', (data) => {
@@ -95,10 +96,10 @@ let app = http.createServer((request, response) => {
   } else if (pathName === '/update') {
     let list = '<ul></ul>'
     fs.readdir('./data', (err, filelist) => {
-      list = templateList(filelist)
+      list = template.list(filelist)
     })
     fs.readFile(`data/${queryData.id}`, 'utf8', (err, description) => {
-      let template = templateHTML(list, title, `
+      let _template = template.html(list, title, `
         <form action="/update_process" method="post">
           <input type="hidden" name="id" value="${title}">
           <p>
@@ -113,7 +114,7 @@ let app = http.createServer((request, response) => {
         </form>
       `)
       response.writeHead(200)
-      response.end(template)
+      response.end(_template)
     })
   } else if (pathName === '/update_process') {
     let body = ''
