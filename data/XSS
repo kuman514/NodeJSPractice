@@ -1,0 +1,3 @@
+<script>
+alert('You did not apply XSS prevention.')
+</script>
