@@ -2,6 +2,7 @@ let http = require('http')
 let fs = require('fs')
 let url = require('url')
 let qs = require('querystring')
+let path = require('path')
 
 let template = require('./lib/template.js')
 
@@ -21,7 +22,8 @@ let app = http.createServer((request, response) => {
       title = 'Welcome'
       queryData.id = 'Welcome'
     }
-    fs.readFile(`data/${queryData.id}`, 'utf8', (err, description) => {
+    let filteredId = path.parse(queryData.id).base
+    fs.readFile(`data/${filteredId}`, 'utf8', (err, description) => {
       let _template = template.html(list, title, `<h2>${title}</h2><p>${description}</p>`)
       response.writeHead(200)
       response.end(_template)
@@ -69,7 +71,8 @@ let app = http.createServer((request, response) => {
     fs.readdir('./data', (err, filelist) => {
       list = template.list(filelist)
     })
-    fs.readFile(`data/${queryData.id}`, 'utf8', (err, description) => {
+    let filteredId = path.parse(queryData.id).base
+    fs.readFile(`data/${filteredId}`, 'utf8', (err, description) => {
       let _template = template.html(list, title, `
         <form action="/update_process" method="post">
           <input type="hidden" name="id" value="${title}">
@@ -97,7 +100,8 @@ let app = http.createServer((request, response) => {
       let title = post.title
       let desc = post.description
       let id = post.id
-      fs.rename(`data/${id}`, `data/${title}`, (err) => {
+      let filteredId = path.parse(id).base
+      fs.rename(`data/${filteredId}`, `data/${title}`, (err) => {
         fs.writeFile(`data/${title}`, desc, 'utf8', (err) => {
           response.writeHead(302, {
             Location: `/?id=${title}`
@@ -114,9 +118,8 @@ let app = http.createServer((request, response) => {
     request.on('end', () => {
       let post = qs.parse(body)
       let id = post.id
-      console.log(post)
-      console.log(id)
-      fs.unlink(`data/${id}`, (err) => {
+      let filteredId = path.parse(id).base
+      fs.unlink(`data/${filteredId}`, (err) => {
         response.writeHead(302, {Location: `/`})
         response.end()
       })
