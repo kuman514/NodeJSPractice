@@ -3,6 +3,7 @@ let fs = require('fs')
 let url = require('url')
 let qs = require('querystring')
 let path = require('path')
+let sanitizeHtml = require('sanitize-html')
 
 let template = require('./lib/template.js')
 
@@ -56,8 +57,8 @@ let app = http.createServer((request, response) => {
     })
     request.on('end', () => {
       let post = qs.parse(body)
-      let title = post.title
-      let desc = post.description
+      let title = sanitizeHtml(post.title)
+      let desc = sanitizeHtml(post.description)
       fs.writeFile(`data/${title}`, desc, 'utf8', (err) => {
         response.writeHead(302, {
           Location: `/?id=${title}`
@@ -96,8 +97,8 @@ let app = http.createServer((request, response) => {
     })
     request.on('end', () => {
       let post = qs.parse(body)
-      let title = post.title
-      let desc = post.description
+      let title = sanitizeHtml(post.title)
+      let desc = sanitizeHtml(post.description)
       let id = post.id
       let filteredId = path.parse(id).base
       fs.rename(`data/${filteredId}`, `data/${title}`, (err) => {
