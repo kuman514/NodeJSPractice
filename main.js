@@ -3,7 +3,13 @@ let fs = require('fs')
 let url = require('url')
 let qs = require('querystring')
 let path = require('path')
-let sanitizeHtml = require('sanitize-html')
+let sanitize_html = require('sanitize-html')
+function sanitizeHtml (string) {
+  return sanitize_html(string, {
+    allowedTags: [],
+    allowedAttributes: {}
+  })
+}
 
 let template = require('./lib/template.js')
 
